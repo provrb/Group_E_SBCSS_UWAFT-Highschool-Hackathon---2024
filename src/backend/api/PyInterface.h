@@ -7,6 +7,7 @@ public:
     PythonInterface();
     ~PythonInterface();
 
+    // Check if a module 'modName' is loaded, in m_Moduless
     bool IsModuleLoaded(const char* modName);
 
     // Load a python module of 'modName'
@@ -21,7 +22,9 @@ public:
     // Call the method of a class in Python
     template <typename ...Args>
     PyObject* CallClassMethod(const char* modName, const char* className, const char* methodName, Args&&... args);
-    
+
+    // Get an already created Python class that can be used between
+    // C++ and Python files interchancably
     PyObject* GetInlineClass(const char* modName, const char* className);
 private:
     std::unordered_map<const char*, PyObject*> m_Modules;
