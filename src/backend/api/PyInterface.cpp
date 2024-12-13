@@ -17,12 +17,25 @@ PythonInterface::~PythonInterface()
     Py_Finalize();
 }
 
-PyObject* PythonInterface::CallClassMethod(const char* modName, const char* className, const char* methodName) {
-    return nullptr;
+template <typename ...Args>
+PyObject* PythonInterface::CallClassMethod(const char* modName, const char* className, const char* methodName, Args&&... args) {
+    PyObject* loadedModule = LoadPythonModule(modName);
+    PyObject* loadedClass = GetInlineClass(modName, className);
+    PyObject* classMethod = PyObject_CallMethod(loadedClass, methodName, args...);
+
+    return classMethod;
+}
+
+PyObject* PythonInterface::GetInlineClass(const char* modName, const char* className) {
+    PyObject* globalDict = PyModule_GetDict(LoadPythonModule(modName));
+    return PyDict_GetItemString(globalDict, className);    
 }
 
 PyObject* PythonInterface::GetClass(const char* modName, const char* className) {
-    return nullptr;
+    PyObject* loadedModule = LoadPythonModule(modName);
+    if ( !loadedModule ) return nullptr;
+
+    return PyObject_GetAttrString(loadedModule, className);
 }
 
 bool PythonInterface::IsModuleLoaded(const char* modName) {

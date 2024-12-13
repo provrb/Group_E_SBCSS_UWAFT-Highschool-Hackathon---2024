@@ -19,7 +19,10 @@ public:
     PyObject* GetClass(const char* modName, const char* className);;
 
     // Call the method of a class in Python
-    PyObject* CallClassMethod(const char* modName, const char* className, const char* methodName); 
+    template <typename ...Args>
+    PyObject* CallClassMethod(const char* modName, const char* className, const char* methodName, Args&&... args);
+    
+    PyObject* GetInlineClass(const char* modName, const char* className);
 private:
     std::unordered_map<const char*, PyObject*> m_Modules;
     std::unordered_map<const char*, PyObject*> m_Classes;
